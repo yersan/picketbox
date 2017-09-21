@@ -66,47 +66,50 @@ public class StaxConfigParser2UnitTestCase extends TestCase
    {
       Configuration.setConfiguration(StandaloneConfiguration.getInstance());
       ClassLoader tcl = Thread.currentThread().getContextClassLoader();
-      InputStream is = tcl.getResourceAsStream("config/securityConfig5.xml");
-      StaxBasedConfigParser parser = new StaxBasedConfigParser(); 
-      
-      parser.schemaValidate(is);
-      
-      is = tcl.getResourceAsStream("config/securityConfig5.xml");
-      parser.parse2(is);
-      
+      StaxBasedConfigParser parser = new StaxBasedConfigParser();
+      try (InputStream is = tcl.getResourceAsStream("config/securityConfig5.xml")) {
+         parser.schemaValidate(is);
+      }
+
+      try (InputStream is = tcl.getResourceAsStream("config/securityConfig5.xml")) {
+         parser.parse2(is);
+      }
+
       TestSecurityConfig5.validateJAASConfiguration();
       TestSecurityConfig5.validateJASPIConfiguration();
       TestSecurityConfig5.validateCompleteConfiguration();
       TestSecurityConfig5.validateApplicationPolicyExtension();
    }
-   
+
    public void testIdentityTrustConfig() throws Exception
    {
       Configuration.setConfiguration(StandaloneConfiguration.getInstance());
       ClassLoader tcl = Thread.currentThread().getContextClassLoader();
-      InputStream is = tcl.getResourceAsStream("config/identitytrust-config.xml");
-      StaxBasedConfigParser parser = new StaxBasedConfigParser(); 
-      parser.schemaValidate(is);
-      
-      is = tcl.getResourceAsStream("config/identitytrust-config.xml");
-      parser.parse2(is);
-      
+      StaxBasedConfigParser parser = new StaxBasedConfigParser();
+      try (InputStream is = tcl.getResourceAsStream("config/identitytrust-config.xml")) {
+         parser.schemaValidate(is);
+      }
+
+      try (InputStream is = tcl.getResourceAsStream("config/identitytrust-config.xml")) {
+         parser.parse2(is);
+      }
+
       TestIdentityTrustConfig.testConfJavaEE();
    }
-   
+
    private static ApplicationPolicy getApplicationPolicy(String domainName)
    {
       Configuration config = Configuration.getConfiguration();
       if(config instanceof ApplicationPolicyRegistration == false)
          throw new RuntimeException("Config is not of type ApplicationPolicyRegistration");
-      
+
       ApplicationPolicyRegistration apr = (ApplicationPolicyRegistration) config;
       return apr.getApplicationPolicy(domainName);
    }
-   
+
    // Internal class to represent the securityConfig5.xml validation
    private static class TestSecurityConfig5
-   { 
+   {
       public static void validateJAASConfiguration()
       {
          ApplicationPolicy jaasConfig = getApplicationPolicy("conf-jaas");
@@ -350,25 +353,25 @@ public class StaxConfigParser2UnitTestCase extends TestCase
          assertNotNull("Unexpected null jaspi configuration", authInfo);
          List<?> entries = authInfo.getModuleEntries();
          assertEquals("Invalid number of auth modules", 3, entries.size());
-      } 
+      }
    } //End class TestSecurityConfig5
-   
-   
+
+
    //Validate the identitytrust-config.xml
    private static class TestIdentityTrustConfig
    {
       public static void testConfJavaEE()
-      { 
+      {
          ApplicationPolicy javaeeConfig = getApplicationPolicy("conf-javaee");
          IdentityTrustInfo identityTrust = javaeeConfig.getIdentityTrustInfo();
          assertNotNull("IdentityTrustInfo", identityTrust);
-         
+
          IdentityTrustModuleEntry[] itilist = identityTrust.getIdentityTrustModuleEntry();
-         assertEquals("IdentityTrustModuleEntry length=1", 1, itilist.length); 
-         
+         assertEquals("IdentityTrustModuleEntry length=1", 1, itilist.length);
+
          IdentityTrustModuleEntry itme = itilist[0];
          assertEquals("org.jboss.security.identitytrust.modules.JavaEETrustModule", itme.getName());
       }
    }
-   
+
 }

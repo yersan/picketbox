@@ -39,6 +39,7 @@ import org.jboss.security.acl.BasicACLPermission;
 import org.jboss.security.acl.CompositeACLPermission;
 import org.jboss.security.acl.Util;
 import org.jboss.security.identity.plugins.IdentityFactory;
+import org.junit.Ignore;
 
 /**
  * <p>
@@ -49,6 +50,7 @@ import org.jboss.security.identity.plugins.IdentityFactory;
  * 
  * @author <a href="mailto:sguilhen@redhat.com">Stefan Guilhen</a>
  */
+@Ignore
 public class PersistenceTestCase extends TestCase
 {
    private EntityManagerFactory entityManagerFactory;
